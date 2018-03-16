@@ -31,15 +31,16 @@
         if(navigator.geolocation) {
          var self = this;
          navigator.geolocation.watchPosition(this.showPosition, this.showError);
-         console.log(navigator.geolocation)
+
+
           }
 
       },
       showPosition(positions) {
         this.seen = true;
         this.position = positions.coords.latitude;
-        alert(this.position);
-        console.log(navigator.geolocation.error)
+        console.log(this.position);
+        this.$router.push('/aircraft')
           // this.alertmessage = "Permission denied! Please alow access to your location to enter website.";
       },
       showError(error) {

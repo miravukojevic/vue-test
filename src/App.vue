@@ -1,18 +1,20 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png">
-    <router-view/> -->
-    <app-welcome></app-welcome>
+    <!-- <!-- <img src="./assets/logo.png"> -->
+    <router-view></router-view>
+
   </div>
 </template>
 
 <script>
 import Welcome from './Welcome.vue'
+import AircraftList from './AircraftList.vue'
 
 export default {
   name: 'App',
   components: {
-    appWelcome: Welcome
+    appWelcome: Welcome,
+    appList: AircraftList
   }
 }
 </script>
