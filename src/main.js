@@ -4,12 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import 'bootstrap'
-import Vuetable from 'vuetable-2'
 import VueResource from 'vue-resource'
 
-Vue.config.productionTip = false
-Vue.use(Vuetable);
-
+Vue.use(VueResource);
+Vue.http.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -17,3 +15,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

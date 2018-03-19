@@ -1,135 +1,105 @@
 <template>
-  <div class="ui container">
-    <vuetable ref="vuetable"
-      api-url="https://vuetable.ratiw.net/api/users"
-      :fields="fields"
-      pagination-path=""
-      :multi-sort="true"
-      multi-sort-key="ctrl"
-      :sort-order="sortOrder"
-      :append-params="appendParams"
-      detail-row-component="my-detail-row"
-      @vuetable:cell-clicked="onCellClicked"
-      @vuetable:pagination-data="onPaginationData"></vuetable>
-      <vuetable-pagination ref="pagination"
-        @vuetable-pagination:change-page="onChangePage"
-      ></vuetable-pagination>
-      <template slot="actions" scope="props">
-      <div class="custom-actions">
-        <button class="ui basic button"
-          @click="onAction('view-item', props.rowData, props.rowIndex)">
-          <i class="zoom icon"></i>
-        </button>
-        <button class="ui basic button"
-          @click="onAction('edit-item', props.rowData, props.rowIndex)">
-          <i class="edit icon"></i>
-        </button>
-        <button class="ui basic button"
-          @click="onAction('delete-item', props.rowData, props.rowIndex)">
-          <i class="delete icon"></i>
-        </button>
-      </div>
-    </template>
-  </div>
+  <div class="container">
+    <div class="wait" v-if="showLoad">
+      <img class="loading" src="./assets/loading-transparent.gif">Please wait...
+    </div>
+  <table cellspacing="0" cellpadding="0" class="table table-striped table-dark" v-else>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Flight Code Number</th>
+      <th scope="col">Altitude</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="info in airInfo" :key="info.Icao" @click="onClick(info.Id)">
+      <th scope="row"><i class="fa fa-plane"></i></th>
+      <td>{{info.Icao}}</td>
+      <td>{{info.Alt}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </template>
 
 <script>
-import Vue from 'vue'
-import Vuetable from 'vuetable-2/src/components/Vuetable'
-import VuetablePagination from 'vuetable-2/src/components/VuetablePagination'
-import CustomActions from './CustomActions'
-import DetailRow from './DetailRow'
-
-Vue.component('custom-actions', CustomActions)
-Vue.component('my-detail-row', DetailRow)
-
 export default {
-  components: {
-    Vuetable,
-    VuetablePagination
-  },
   data () {
     return {
-      fields: [
-      'name', 'email',
-        {
-          name: 'birthdate',
-          titleClass: 'center aligned',
-          dataClass: 'center aligned',
-          sortField: 'name'
-        },
-        {
-          name: 'nickname',
-          sortField: 'nickname',
-          callback: 'allcap'
-        },
-        {
-          name: 'gender',
-          titleClass: 'center aligned',
-          dataClass: 'center aligned',
-          callback: 'genderLabel'
-        },
-        {
-          name: 'salary',
-          titleClass: 'center aligned',
-          dataClass: 'right aligned'
-        },
-        {
-          name: '__component:custom-actions',
-          title: 'Actions',
-          titleClass: 'center aligned',
-          dataClass: 'center aligned'
-        },
-        {
-          name: '__slot:actions',
-          title: 'Actions',
-          titleClass: 'center aligned',
-          dataClass: 'center aligned'
-        }
-      ],
-      sortOrder: [
-          {
-            field: 'email',
-            sortField: 'email',
-            direction: 'asc'
-          }
-        ]
+      list: [],
+      airInfo: '',
+      timer: '',
+      showLoad: true
     }
   },
+  components: {
+
+  },
+  created() {
+    this.fetchData()
+  },
   methods: {
-    allcap (value) {
-      return value.toUpperCase()
+    fetchData() {
+
+      this.$http.jsonp('http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?lat=33.433638&lng=-112.008113&fDstL=0&fDstU=100', {foo: 'bar'}).then(response => {
+
+        console.log("a");
+          // get status
+          response.status;
+
+          // get status text
+          response.statusText;
+
+          // get 'Expires' header
+          response.headers.get('Expires');
+
+          // get body data
+
+          this.airInfo = response.data.acList
+
+          // setTimeout(this.fetchData(), 200);
+          this.showLoad = false;
+
+          }, response => {
+            // error callback
+          });
     },
-    genderLabel (value) {
-      return value === 'M'
-        ? '<span class="ui teal label"><i class="large man icon"></i>Male</span>'
-        : '<span class="ui pink label"><i class="large woman icon"></i>Female</span>'
-    },
-    onPaginationData (paginationData) {
-      this.$refs.pagination.setPaginationData(paginationData)
-    },
-    onChangePage (page) {
-      this.$refs.vuetable.changePage(page)
-    },
-    onAction (action, data, index) {
-      console.log('slot) action: ' + action, data.name, index)
-    },
-    onCellClicked (data, field, event) {
-        console.log('cellClicked: ', field.name)
-        this.$refs.vuetable.toggleDetailRow(data.id)
-    },
-    onFilterSet (filterText) {
-      this.appendParams.filter = filterText
-      Vue.nextTick( () => this.$refs.vuetable.refresh() )
-    },
-    onFilterReset () {
-      delete this.appendParams.filter
-      Vue.nextTick( () => this.$refs.vuetable.refresh() )
-    }
+    onClick (id) {
+      console.log("op")
+         this.$router.push({name: 'DetailRow', params:{id: id}});
+      }
   }
 }
 </script>
 
 <style>
-
+.container {
+  padding-top: 30px;
+}
+table{
+  border: none;
+  border-collapse: collapse;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+  color: #fff;
+  text-align: left;
+  border-color: #32383e;
+}
+.fa-rotate-45 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+.table-striped>tbody>tr:nth-of-type(odd){
+  background-color: #2B2E31;
+}
+.wait{
+  color: #fff;
+}
+.wait img{
+  width:40px;
+  height: 40px;
+}
 </style>
