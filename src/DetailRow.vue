@@ -16,3 +16,4 @@ dvdfvdfvdfdv
     },
   }
   </script>
+//  http://andreybleme.com/2018-01-07/sharing-data-across-vuejs-components

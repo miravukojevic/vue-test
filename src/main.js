@@ -8,6 +8,8 @@ import VueResource from 'vue-resource'
 
 Vue.use(VueResource);
 Vue.http.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+
+export const EventBus = new Vue();
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -15,4 +17,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-
