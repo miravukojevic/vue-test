@@ -5,15 +5,16 @@ import App from './App'
 import router from './router'
 import 'bootstrap'
 import VueResource from 'vue-resource'
+import { store } from './store/store';
 
 Vue.use(VueResource);
 Vue.http.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
-export const EventBus = new Vue();
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  store
 })

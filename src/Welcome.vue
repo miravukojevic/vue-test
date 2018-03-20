@@ -38,10 +38,9 @@
       },
       showPosition(positions) {
         this.seen = true;
-        this.position = positions.coords.latitude;
-        console.log(this.position);
-        this.$router.push('/aircraft')
-          // this.alertmessage = "Permission denied! Please alow access to your location to enter website.";
+
+        this.$store.dispatch('setPositions', positions.coords);
+        this.$router.push('/aircraft');
       },
       showError(error) {
         this.seen = true;
