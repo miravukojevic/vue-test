@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <!-- <!-- <img src="./assets/logo.png"> -->
-    <router-view></router-view>  
+    <router-view></router-view>
   </div>
 </template>
 
@@ -33,6 +32,7 @@ body{
 .logo {
   width: 300px;
   margin-top: 20%;
+      margin-left: -55px;
 }
 .welcome {
   color: #fff;

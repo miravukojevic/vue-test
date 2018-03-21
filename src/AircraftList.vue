@@ -1,10 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container air-craft-list">
     <div class="wait" v-if="showLoad">
       <img class="loading" src="./assets/loading-transparent.gif">Please wait...
     </div>
   <div class="content-table" v-else>
-    <button class="btn btn-default" @click="sortArray(airInfo)">Sort by highest altitude <i class="fa fa-sort-up"></i></button>
+    <h1>Welcome to aircraft list</h1>
+    <button class="btn btn-default" @click="sortArray()"><span>Sort by highest altitude <i class="fa fa-sort-up"></i></span></button>
     <table cellspacing="0" cellpadding="0" class="table table-striped table-dark">
     <thead>
       <tr>
@@ -14,13 +15,19 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(info) in airInfo" :key="info.Icao" @click="onClick(info.Id, info)">
-        <th scope="row"><i class="fa fa-plane"></i></th>
-        <td>{{info.Icao}}</td>
+      <tr v-for="info in airInfo" :key="info.Icao" @click="onClick(info.Id, info)">
+        <th scope="row"><i class="fa fa-plane" v-if="info.Trak > 0 && info.Trak < 180"></i><i class="fa fa-plane fa-rotate-45" v-else></i></th>
+        <td>
+          {{info.Icao}}
+          <div class="relative">
+            <div class="alt-text">Click on row to see details for {{info.Mdl}} aircraft</div>
+          </div>
+        </td>
         <td>{{info.Alt}}</td>
       </tr>
     </tbody>
   </table>
+
 </div>
 </div>
 </template>
@@ -29,6 +36,7 @@
 import {mapActions, mapGetters} from 'vuex'
 export default {
   props: ['details'],
+  name: 'AircraftList',
   data () {
     return {
       list: [],
@@ -36,7 +44,7 @@ export default {
       timer: '',
       showLoad: true,
       positions: {},
-      apiurl: 'http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?lat={lat}&lng={lng}'
+      apiurl: 'http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?lat={lat}&lng={lng}&fDstL=0&fDstU=100' //using this url to have some items to show
     }
   },
   created() {
@@ -46,6 +54,7 @@ export default {
       this.$router.push({name: 'Welcome'});
   else
   {
+      //This is the url based on users geolocation data
       // this.apiurl = this.apiurl.replace("{lat}", this.positions.latitude);
       // this.apiurl = this.apiurl.replace("{lng}", this.positions.longitude);
 
@@ -53,6 +62,7 @@ export default {
       this.apiurl = this.apiurl.replace("{lng}", '-112.008113');
 
       this.fetchData()
+      setTimeout(this.fetchData, 60000);
   }
   },
   computed: {
@@ -63,27 +73,17 @@ export default {
     fetchData() {
       this.$http.jsonp(this.apiurl).then(response => {
 
-        console.log("a");
+        // console.log("a");
           // get status
           response.status;
-
-          // get status text
-          response.statusText;
-
-          // get 'Expires' header
-          response.headers.get('Expires');
-
-          // get body data
-
           this.airInfo = response.data.acList
-
-          // setTimeout(this.fetchData(), 200);
+          console.log('Data updated automaticly each minute')
           this.showLoad = false;
 
           }, response => {
             // error callback
           });
-      },
+    },
     dynamicSort(property) {
       let sortOrder = -1;
       if(property[0] === "-") {
@@ -94,63 +94,104 @@ export default {
         let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
       }
+
     },
-    sortArray(airInfo){
-      airInfo.sort(this.dynamicSort('Alt'))
+    sortArray(){
+      this.airInfo.sort(this.dynamicSort('Alt'))
     },
     onClick (id, item) {
-       this.setDetails(item)
        this.$router.push({name: 'DetailRow', params:{id: id}});
-      }
+       this.setDetails(item)
+    }
   }
 }
 </script>
 
 <style>
-.container {
-  padding-top: 30px;
-}
-table{
-  border: none;
-  border-collapse: collapse;
-}
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
-  color: #fff;
-  text-align: left;
-  border-color: #32383e;
-}
-.fa-rotate-45 {
-  -webkit-transform: rotate(270deg);
-  -moz-transform: rotate(270deg);
-  -ms-transform: rotate(270deg);
-  -o-transform: rotate(270deg);
-  transform: rotate(270deg);
-}
-.table-striped>tbody>tr:nth-of-type(odd){
-  background-color: #2B2E31;
-}
-.wait{
-  color: #fff;
-}
-.wait img{
-  width:40px;
-  height: 40px;
-}
-.btn-default {
-  float:right;
-  color: #fff;
-  background: none;
-  border: none;
-  padding-right: 0;
+  .container {
+    padding-top: 30px;
   }
-.btn-default .fa{
-  margin-left: 5px;
-  vertical-align: bottom;
-}
-.btn-default:hover, .btn-default:active, .btn-default:focus{
-  color: #fff;
-  background: none;
-  border:none;
-  outline: none;
-}
+  .air-craft-list h1 {
+    margin-bottom: 40px;
+    color: #fff;
+  }
+  table{
+    border: none;
+    border-collapse: collapse;
+  }
+  .relative{
+    position: relative;
+  }
+  .content-table tr {
+    cursor: pointer;
+    position: relative;
+  }
+  .content-table tr:hover .alt-text{
+    display:block;
+  }
+  .alt-text:before {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    right: calc(50% - 10px);
+    top: -8px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent #d9534f transparent;
+    transition-duration: 0.3s;
+    transition-property: transform;
+  }
+  .alt-text{
+    position: absolute;
+    display:none;
+    top:3px;
+    left: 0;
+    transform: translate(0,-20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+    transform: translate(0,10px);
+    background-color: #d9534f;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    width: auto;
+    z-index: 10;
+  }
+  .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+    color: #fff;
+    text-align: left;
+    border-color: #32383e;
+  }
+  .fa-rotate-45 {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+  }
+  .table-striped>tbody>tr:nth-of-type(odd){
+    background-color: #2B2E31;
+  }
+  .wait{
+    color: #fff;
+  }
+  .wait img{
+    width:40px;
+    height: 40px;
+  }
+  .btn-default {
+    float:right;
+    color: #fff;
+    background: none;
+    border: none;
+    padding-right: 0;
+    }
+  .btn-default .fa{
+    margin-left: 5px;
+    vertical-align: bottom;
+  }
+  .btn-default:hover, .btn-default:active, .btn-default:focus{
+    color: #fff;
+    background: none;
+    border:none;
+    outline: none;
+  }
 </style>
