@@ -44,9 +44,10 @@
       }
     },
     created(){
-      let test = this.activeDetail.Op
-      this.urlImg = test.split(' ').slice(0,2).join('').toLowerCase();
-
+      if (this.activeDetail.Op){
+      let imgByOp = this.activeDetail.Op
+      this.urlImg = imgByOp.split(' ').slice(0,2).join('').toLowerCase();
+      }
       console.log(this.urlImg)
     },
     computed: {
