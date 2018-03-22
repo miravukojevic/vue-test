@@ -22,8 +22,8 @@
           <tr>
             <th scope="row">The logo of company</th>
             <td>
-              <img  v-if="urlImg"  :src="'//logo.clearbit.com/' + urlImg + '.com'" alt="No image under this url">
-              <img  v-else  src="./assets/noimage.png">
+              <img  v-if="urlImg"  :src="'//logo.clearbit.com/' + urlImg + '.com'" alt="activeDetail.Op">
+              <img  v-else  src="./assets/noimage.png" alt="No image under this url">
             </td>
           </tr>
         </tbody>
@@ -76,6 +76,7 @@
     cursor: pointer;
     border-bottom: 1px solid #32383e;
     padding-bottom: 3px;
+    text-decoration: none;
   }
   .border-none{
     border-top: none !important;
