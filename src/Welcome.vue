@@ -46,7 +46,6 @@
       },
       showError(error) {
         this.seen = true;
-        // $('.wait').css('display', none);
         switch (error.code) {
           case 1:
           console.log(error)
@@ -56,9 +55,13 @@
               break;
           case 2:
               this.alertmessage = "Position unavailable! Please alow access to your location to enter website.";
+              this.showModal = true;
+              this.showLoading = false;
               break;
           case 3:
               this.alertmessage = "Timeout! Please alow access to your location to enter website.";
+              this.showModal = true;
+              this.showLoading = false;
               break;
           }
       }
@@ -68,41 +71,40 @@
 </script>
 
 <style>
-.allow-btn {
-  background: url("assets/sucess.png") #35C245 no-repeat left 3px center;
-  padding: 10px 10px 10px 33px;
-  color: #fff;
-  margin: 20px auto;
-  display: block;
-  float: none;
-}
-.allow-btn:hover{
-  background: url("assets/sucess-hover.png") #26BA34 no-repeat left 3px center;
-  color: #fff;
-}
-.wait {
-  font-size: 20px;
-}
-.loading {
-  width: 28px;
-  margin-top: -3px;
-  margin-right: 5px;
-}
-#alertModal {
-  background-color: rgba(250,0,0,.4);
-  border: 1px solid #999;
-}
-.modal {
-  display: block;
-  color: black;
-  color: red;
-}
-.modal-header {
-  border-bottom: none;
-  padding: 15px 15px 0 0;
-}
-.modal-body {
-  padding: 30px;
-}
-
+  .allow-btn {
+    background: url("assets/sucess.png") #35C245 no-repeat left 3px center;
+    padding: 10px 10px 10px 33px;
+    color: #fff;
+    margin: 20px auto;
+    display: block;
+    float: none;
+  }
+  .allow-btn:hover{
+    background: url("assets/sucess-hover.png") #26BA34 no-repeat left 3px center;
+    color: #fff;
+  }
+  .wait {
+    font-size: 20px;
+  }
+  .loading {
+    width: 28px;
+    margin-top: -3px;
+    margin-right: 5px;
+  }
+  #alertModal {
+    background-color: rgba(250,0,0,.4);
+    border: 1px solid #999;
+  }
+  .modal {
+    display: block;
+    color: black;
+    color: red;
+  }
+  .modal-header {
+    border-bottom: none;
+    padding: 15px 15px 0 0;
+  }
+  .modal-body {
+    padding: 30px;
+  }
 </style>

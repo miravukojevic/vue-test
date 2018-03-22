@@ -44,7 +44,7 @@ export default {
       timer: '',
       showLoad: true,
       positions: {},
-      apiurl: 'http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?lat={lat}&lng={lng}&fDstL=0&fDstU=100' //using this url to have some items to show
+      apiurl: 'http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?lat={lat}&lng={lng}'
     }
   },
   created() {
@@ -54,12 +54,11 @@ export default {
       this.$router.push({name: 'Welcome'});
   else
   {
-      //This is the url based on users geolocation data
-      // this.apiurl = this.apiurl.replace("{lat}", this.positions.latitude);
-      // this.apiurl = this.apiurl.replace("{lng}", this.positions.longitude);
+      this.apiurl = this.apiurl.replace("{lat}", this.positions.latitude);
+      this.apiurl = this.apiurl.replace("{lng}", this.positions.longitude);
 
-      this.apiurl = this.apiurl.replace("{lat}", '33.433638');
-      this.apiurl = this.apiurl.replace("{lng}", '-112.008113');
+      // this.apiurl = this.apiurl.replace("{lat}", '33.433638');
+      // this.apiurl = this.apiurl.replace("{lng}", '-112.008113');
 
       this.fetchData()
       setTimeout(this.fetchData, 60000);
@@ -94,7 +93,6 @@ export default {
         let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
       }
-
     },
     sortArray(){
       this.airInfo.sort(this.dynamicSort('Alt'))

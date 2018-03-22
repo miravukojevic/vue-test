@@ -21,7 +21,10 @@
           </tr>
           <tr>
             <th scope="row">The logo of company</th>
-            <td><img v-if="" :src="'//logo.clearbit.com/' + urlImg + '.com'"></td>
+            <td>
+              <img  v-if="urlImg"  :src="'//logo.clearbit.com/' + urlImg + '.com'" alt="No image under this url">
+              <img  v-else  src="./assets/noimage.png">
+            </td>
           </tr>
         </tbody>
       </table>
@@ -31,6 +34,7 @@
 
   <script>
   import { mapGetters } from 'vuex'
+
   export default {
     name: 'DetailRow',
     data() {
@@ -48,18 +52,15 @@
     computed: {
       ...mapGetters(['activeDetail'])
 
-    },
-    methods: {
-
-    },
+    }
   }
   </script>
 <style>
   .details-page{
-   color: #fff;
-   background: url("assets/airplane-bg.png") no-repeat right 5% top 30px;
-   padding-top: 40px;
-   min-height: 500px;
+    color: #fff;
+    background: url("assets/airplane-bg.png") no-repeat right 5% top 30px;
+    padding-top: 40px;
+    min-height: 500px;
   }
   .details-page h1 {
     margin-bottom: 40px;
