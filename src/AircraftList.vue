@@ -61,7 +61,7 @@ export default {
       // this.apiurl = this.apiurl.replace("{lng}", '-112.008113');
 
       this.fetchData()
-      setTimeout(this.fetchData, 60000);
+
   }
   },
   computed: {
@@ -76,9 +76,10 @@ export default {
           // get status
           response.status;
           this.airInfo = response.data.acList
-          console.log('Data updated automaticly each minute')
-          this.showLoad = false;
 
+          this.showLoad = false;
+          setTimeout(this.fetchData, 60000);
+          console.log('Data updated automaticly each minute')
           }, response => {
             // error callback
           });
